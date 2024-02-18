@@ -14,20 +14,12 @@ public class BookLending{
     public BookStatus Status { get; set; }
     public BookItem Book { get; }
     public Member Member { get; }
-
-    public void LendBook(BookItem book, Member user)
+    private NotificationManager notificationManager;
+    public BookLending(BookItem book, DateTime dueDate)
     {
-        //check if book is available
-        if (book.BookStatus == BookStatus.Available)
-        {
-            BookItem = book;
-            Memeber = user;
-            CreatedDate = DateTime.Now;
-            Status = BookStatus.Loaned;
-            DueDate = DateTime.Now.AddDays(5);
-            //save bookslending
-        }
-
+        BookItem = book;
+        DueDate = dueDate;
+        book.BookStatus = BookStatus.Loaned; // Update book status
     }
 
     internal decimal CalculateFine()
@@ -40,5 +32,6 @@ public class BookLending{
         return 0;
     }
 }
+
 
 

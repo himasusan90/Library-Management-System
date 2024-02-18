@@ -1,27 +1,14 @@
 ﻿// See https://aka.ms/new-console-template for more information
-public class Member : Account
+public class Member : Account,IObserver
 {
 
     public int TotalNumberOfCheckedBook { get; set; }
     private List<BookLending> currentCheckouts = new List<BookLending>();
     private List<BookReservation> currentReservations = new List<BookReservation>();
-    public bool CheckoutBook(BookItem book)
+   
+    public void Update(string message)
     {
-        if (TotalNumberOfCheckedBook > 5)
-        {
-            Console.WriteLine("Checkout limit reached.");
-            return false;
-        }
-        if (book.BookStatus != BookStatus.Available)
-        {
-            Console.WriteLine("Book is not available for checkout.");
-            return false;
-        }
-        var lending = new BookLending(book,this);
-        lending.LendBook(book, this);
-        currentCheckouts.Add(lending);
-        return true;
-
+        Console.WriteLine($"Notification for {this.Person.FirstName}: {message}");
     }
 
     public bool ReturnBook(BookItem bookItem)
@@ -74,6 +61,23 @@ public class Member : Account
         Console.WriteLine($"Book {bookItem.Title} reserved successfully.");
     }
 
+    internal void AddBookLending(BookLending lending)
+    {
+        if (lending != null && !currentCheckouts.Contains(lending))
+        {
+            currentCheckouts.Add(lending);
+            TotalNumberOfCheckedBook++; // Increment the count of checked-out books
+        }
+    }
+
+    internal void RemoveBookLending(BookLending lending)
+    {
+        if (lending != null && currentCheckouts.Contains(lending))
+        {
+            currentCheckouts.Remove(lending);
+            TotalNumberOfCheckedBook--; // Decrement the count of checked-out books
+        }
+    }
 }
 
 
